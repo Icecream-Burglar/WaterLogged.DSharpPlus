@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using DSharpPlus;
 
 namespace WaterLogged.DSharpPlus.cs
@@ -16,8 +17,8 @@ namespace WaterLogged.DSharpPlus.cs
         public DiscordClient DiscordClient { get; set; }
         /// <summary>
         /// Gets or sets a dictionary mapping tags to output to specific channels.
-        /// Add an item with an empty string as its key to send all messages that
-        /// item's associated channel IDs.
+        /// Add an item with an empty string as its key to send all messages to that
+        /// item's associated array of channel IDs.
         /// </summary>
         public Dictionary<string, ulong[]> OutputChannels { get; private set; }
 
@@ -43,11 +44,15 @@ namespace WaterLogged.DSharpPlus.cs
                 }
                 foreach (var channelId in item.Value)
                 {
-                    var channel = DiscordClient.GetChannelAsync(channelId);
-                    channel.Wait();
-                    channel.Result.SendMessageAsync(value);
+                    Send(value, channelId);
                 }
             }
+        }
+
+        private async Task Send(string message, ulong channelId)
+        {
+            var channel = await DiscordClient.GetChannelAsync(channelId);
+            channel.SendMessageAsync(message);
         }
     }
 }
