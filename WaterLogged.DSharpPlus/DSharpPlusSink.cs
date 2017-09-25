@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using WaterLogged.Serialization.StringConversion;
@@ -64,13 +65,18 @@ namespace WaterLogged.DSharpPlus.cs
                 {
                     continue;
                 }
+                var embed = builder.Build();
                 foreach (var channelId in item.Value)
                 {
-                    var channel = DiscordClient.GetChannelAsync(channelId);
-                    channel.Wait();
-                    channel.Result.SendMessageAsync(embed: builder.Build());
+                    Send(embed, channelId);
                 }
             }
+        }
+
+        private async Task Send(DiscordEmbed embed, ulong channelId)
+        {
+            var channel = await DiscordClient.GetChannelAsync(channelId);
+            await channel.SendMessageAsync(embed: embed);
         }
     }
 }

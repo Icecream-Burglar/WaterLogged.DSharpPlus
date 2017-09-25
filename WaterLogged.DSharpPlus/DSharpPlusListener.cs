@@ -52,7 +52,7 @@ namespace WaterLogged.DSharpPlus.cs
         private async Task Send(string message, ulong channelId)
         {
             var channel = await DiscordClient.GetChannelAsync(channelId);
-            channel.SendMessageAsync(message);
+            await channel.SendMessageAsync(message);
         }
     }
 }
